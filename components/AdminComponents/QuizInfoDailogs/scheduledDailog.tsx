@@ -125,7 +125,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [onSchedule]);
 
     return (
 

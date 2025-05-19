@@ -167,7 +167,7 @@ export default function PaymentStatusPage() {
       }
     }
     storeDataInFirestore();
-  }, [status, productType, productId, auth, db, deviceType, orderId, router, uid]);
+  }, [status, productType, productId, deviceType, orderId, router, uid]);
 
   if (error) {
     return <div className="text-red-600">Error: {error}</div>;

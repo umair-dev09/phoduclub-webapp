@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -94,15 +94,22 @@ function TesstseriesInfo() {
     const isInitiallySorted = useRef(false); // To track initial sorting
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
-    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
-
-    const [sortConfig, setSortConfig] = useState<{
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;    const [sortConfig, setSortConfig] = useState<{
         key: string;
         direction: 'asc' | null | 'desc';
     }>({
         key: 'publishedOn',
         direction: 'desc'
     });
+
+const statusMapping = useMemo<Record<Option, string[]>>(() => ({
+        'Saved': ['saved'],
+        'Live': ['live'],
+        'Scheduled': ['scheduled'],
+        'Pause': ['paused'],
+        'Finished': ['finished'],
+        'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
+    }), []);
 
     useEffect(() => {
         const testCollection = collection(db, "testseries");
@@ -221,7 +228,7 @@ function TesstseriesInfo() {
 
         setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, tests, selectedDate, sortConfig]);
+    }, [searchTerm, checkedState, tests, selectedDate, sortConfig, data, statusMapping]);
 
     const handleSort = (key: string) => {
         if (key === 'questions' || key === 'publishedOn') {
@@ -304,14 +311,7 @@ function TesstseriesInfo() {
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
 
-    const statusMapping: Record<Option, string[]> = {
-        'Saved': ['saved'],
-        'Live': ['live'],
-        'Scheduled': ['scheduled'],
-        'Pause': ['paused'],
-        'Finished': ['finished'],
-        'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
-    };
+    
     const toggleCheckbox = (option: Option) => {
         setCheckedState((prevState) => ({
             ...prevState,

@@ -5,7 +5,7 @@
 // import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 // import Image from "next/image";
 // import { useSearchParams } from "next/navigation";
-// import { useEffect, useRef, useState } from "react";
+// import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 // import Radio from '@mui/material/Radio';
 // import RadioGroup from '@mui/material/RadioGroup';
 // import FormControlLabel from '@mui/material/FormControlLabel';
@@ -321,7 +321,7 @@ import { db } from "@/firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -367,7 +367,9 @@ function ReviewTestView() {
     const searchParams = useSearchParams();
     const tId = searchParams.get("tId");
     const sectionIds = searchParams.get("sectionIds");
-    const sections = sectionIds ? JSON.parse(decodeURIComponent(sectionIds)) : [];
+    const sections = useMemo(() => {
+        return sectionIds ? JSON.parse(decodeURIComponent(sectionIds)) : [];
+    }, [sectionIds]);
 
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [questions, setQuestions] = useState<Question[]>([]);
@@ -375,10 +377,9 @@ function ReviewTestView() {
     const [currentSection, setCurrentSection] = useState<Section | null>(null);
     const [subSections, setSubSections] = useState<SubSection[]>([]);
     const [activeSubSectionIndex, setActiveSubSectionIndex] = useState(0);
-    const [error, setError] = useState<string | null>(null);
-    const dataFetched = useRef(false);
+    const [error, setError] = useState<string | null>(null);    const dataFetched = useRef(false);
 
-    const fetchQuestionsForSection = async (path: string) => {
+    const fetchQuestionsForSection = useCallback(async (path: string) => {
         const sectionRef = doc(db, path);
         const questionsRef = collection(sectionRef, 'Questions');
         const questionsSnap = await getDocs(questionsRef);
@@ -391,13 +392,12 @@ function ReviewTestView() {
                 questionId: questionDoc.id,
                 isChecked: false,
                 isActive: false
-            });
-        });
+            });        });
         
         return fetchedQuestions;
-    };
+    }, []);
 
-    const fetchSubSections = async (path: string) => {
+    const fetchSubSections = useCallback(async (path: string) => {
         const sectionRef = doc(db, path);
         const subSectionsRef = collection(sectionRef, 'sections');
         const subSectionsSnap = await getDocs(subSectionsRef);
@@ -414,9 +414,8 @@ function ReviewTestView() {
                 questions
             });
         }
-        
-        return fetchedSubSections.sort((a, b) => (a.order || 0) - (b.order || 0));
-    };
+          return fetchedSubSections.sort((a, b) => (a.order || 0) - (b.order || 0));
+    }, [fetchQuestionsForSection]);
     useEffect(() => {
         if (dataFetched.current) return;
         let isMounted = true;
@@ -481,7 +480,7 @@ function ReviewTestView() {
         return () => {
             isMounted = false;
         };
-    }, [tId, sections]);
+    }, [tId, sections, fetchSubSections]);
 
     const handleSubSectionChange = (index: number) => {
         setActiveSubSectionIndex(index);

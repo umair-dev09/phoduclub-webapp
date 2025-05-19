@@ -21,7 +21,7 @@ function ViewAnalytics({ open, onClose }: ViewAnalyticsProps) { // Use the inter
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [onClose]);
     return (
 
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton

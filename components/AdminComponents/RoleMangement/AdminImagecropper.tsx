@@ -232,12 +232,15 @@ const AdminImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: Ima
                   aspect={ASPECT_RATIO}
                   minWidth={MIN_DIMENSION}
                 >
-                  <img
+                  <Image
                     ref={imgRef}
                     src={imgSrc}
                     alt="Upload"
                     style={{ maxHeight: '350px' }}
                     onLoad={onImageLoad}
+                    width={500}
+                    height={350}
+                    unoptimized
                   />
                 </ReactCrop>
                 <button

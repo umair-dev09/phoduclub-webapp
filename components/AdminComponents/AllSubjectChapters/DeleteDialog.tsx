@@ -2,7 +2,7 @@ import { db } from "@/firebase";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface Deleteprops {
@@ -16,7 +16,7 @@ function DeleteChapter({ open, onClose, chapterId, chapterName }: Deleteprops) {
     const [confirmedName, setConfirmedName] = useState('');
     const isFormValid = chapterName === confirmedName;
 
-    const handleDeleteChapter = async () => {
+    const handleDeleteChapter = useCallback(async () => {
         try {
             await deleteDoc(doc(db, 'spt', chapterId));
             toast.success('Chapter Removed Successfully!');
@@ -25,7 +25,7 @@ function DeleteChapter({ open, onClose, chapterId, chapterName }: Deleteprops) {
             console.error('Error removing chapter from Firestore:', error);
             toast.error('Failed to remove chapter. Please try again.');
         }
-    };
+    }, [chapterId, onClose]);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {

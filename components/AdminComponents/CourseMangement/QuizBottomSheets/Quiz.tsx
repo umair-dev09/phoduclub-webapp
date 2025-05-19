@@ -100,27 +100,8 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
     const [questionsList, setQuestionsList] = useState<Question[]>([]);
-    useEffect(() => {
-        if (isOpen && contentId) {
-            fetchContentData(contentId || '');
-            setCurrentStep(0);
-        }
-        else {
-            setCurrentStep(0);
-            setQuizName('');
-            setQuizDescription('');
-            setMarksPerQ('');
-            setnMarksPerQ('');
-            setTimeNumber('');
-            setTimeText('Minutes');
-            setQuestionsList([]);
-            setAnyQuestionAdded('');
-            setLoading(false);
-            setCurrentStep(0);
-        }
-    }, [isOpen, contentId]);
 
-    const fetchContentData = async (contentId: string) => {
+ const fetchContentData = async (contentId: string) => {
         try {
             const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
             const contentDocSnap = await getDoc(contentDocRef);
@@ -165,6 +146,28 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
         }
     };
 
+
+    useEffect(() => {
+        if (isOpen && contentId) {
+            fetchContentData(contentId || '');
+            setCurrentStep(0);
+        }
+        else {
+            setCurrentStep(0);
+            setQuizName('');
+            setQuizDescription('');
+            setMarksPerQ('');
+            setnMarksPerQ('');
+            setTimeNumber('');
+            setTimeText('Minutes');
+            setQuestionsList([]);
+            setAnyQuestionAdded('');
+            setLoading(false);
+            setCurrentStep(0);
+        }
+    }, [isOpen, contentId, fetchContentData]);
+
+   
     // Validation function to check if all fields are filled for the Questions step
     const isFormValid = () => {
         if (currentStep === Step.QuizInfo) {
@@ -406,6 +409,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
         marksPerQ,
         timeNumber,
         timeText,
+        handleNextClick
 
     ]);
     useEffect(() => {
@@ -421,7 +425,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isOpen, isSaveValid]);
+    }, [isOpen, isSaveValid, handleSaveClick]);
 
     if (loading) {
         return <LoadingData />

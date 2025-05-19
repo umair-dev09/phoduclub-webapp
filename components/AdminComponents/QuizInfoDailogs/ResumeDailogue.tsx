@@ -59,7 +59,7 @@ function Resume({ open, onClose, fromContent, contentId }: ResumeQuizProps) { //
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [onResume]);
 
   return (
     <Modal

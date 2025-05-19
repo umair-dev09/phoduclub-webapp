@@ -1,5 +1,5 @@
 import styles from '../Profile.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import Image from 'next/image';
 import Select, { MultiValue, SingleValue } from 'react-select';
@@ -27,11 +27,15 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
   const [isOtpOpen, setIsOtpOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);  const [loading, setLoading] = useState(true);
   const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
   const db = getFirestore();
-
+  
+  const years = useMemo(() => [
+    { value: '2024', label: '2024' },
+    { value: '2025', label: '2025' },
+    { value: '2026', label: '2026' },
+  ], []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -78,7 +82,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     if (user) {
       fetchUserData();
     }
-  }, [user, db]);
+  }, [ user, db, years]);
 
   // if (loading || error) {
   //   return <LoadingData />;
@@ -93,11 +97,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     isFocused: boolean;
   };
 
-  const years: Option[] = [
-    { value: '2024', label: '2024' },
-    { value: '2025', label: '2025' },
-    { value: '2026', label: '2026' },
-  ];
+ 
   let [isOpen, setIsOpen] = useState(false)
   const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
 
@@ -111,10 +111,9 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
       });
     } else {
       console.log('Recaptcha already rendered');
-    }
-  };
+    }  };
 
-  const onContinueClick = () => {
+  const onContinueClick = useCallback(() => {
     setUpRecaptcha();
     const appVerifier = recaptchaVerifierRef.current;
 
@@ -139,12 +138,11 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
           pending: 'Sending OTP...',
           success: 'OTP sent successfully!',
           error: 'Failed to send OTP',
-        }
-      );
+        }      );
     } else {
       console.error('No valid Phone Number');
     }
-  };
+  }, [userData?.phone, setIsOpen, setShowComponent, setIsOtpOpen]);
 
   const handleResendOtp = async () => {
     setUpRecaptcha(); // Make sure recaptcha is set up
@@ -184,7 +182,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen]);
+  }, [onContinueClick,isOpen]);
 
 
   return (

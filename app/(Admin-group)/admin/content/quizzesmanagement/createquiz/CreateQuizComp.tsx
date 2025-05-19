@@ -1,5 +1,5 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
 import Questions from "@/components/AdminComponents/createQuiz/Questions";
@@ -193,13 +193,83 @@ function CreateQuiz() {
 
     const isNextButtonDisabled = !isFormValid();
     const isSaveButtonDisabled = !isFormValid1();
-    const userId = auth.currentUser ? auth.currentUser.uid : null;
-
-    const currentDate = new Date();
+    const userId = auth.currentUser ? auth.currentUser.uid : null;    const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    const handleSaveChanges = useCallback(async () => {
+        toast.promise(
+            new Promise(async (resolve, reject) => {
+                try {
+                    // Simulate delay
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    if (quizId) {
+                        // Update existing quiz document
+                        const quizRef = doc(db, 'quiz', quizId);
+                        await updateDoc(quizRef, {
+                            quizName,
+                            quizDescription,
+                        });
 
-    const handleNextClick = async () => {
+                        // Update questions using batch
+                        const questionsCollectionRef = collection(quizRef, 'Questions');
+                        const batch = writeBatch(db);
+
+                        // Delete removed questions
+                        for (const deletedId of deletedQuestionIds) {
+                            const deleteRef = doc(questionsCollectionRef, deletedId);
+                            batch.delete(deleteRef);
+                        }
+                        // Process each question in the list
+                        for (const question of questionsList) {
+                            let questionRef;
+
+                            if (!question.questionId || question.questionId.startsWith('temp-')) {
+                                questionRef = doc(questionsCollectionRef);
+                            } else {
+                                questionRef = doc(questionsCollectionRef, question.questionId);
+                            }
+
+                            const questionData = {
+                                questionId: questionRef.id,
+                                question: question.question,
+                                options: question.options,
+                                correctAnswer: question.correctAnswer,
+                                answerExplanation: question.explanation,
+                                order: question.order !== undefined ? question.order : 0,
+                            };
+                            batch.set(questionRef, questionData);
+                        }
+
+                        await batch.commit();
+                        setOriginalName(quizName);
+                        setOriginalDescription(quizDescription);
+                        setOriginalQuestionsList(questionsList);
+                        resolve('Changes Saved Successfully!');
+                    }
+                } catch (error) {
+                    reject('Error in saving/updating quiz');
+                    console.error('Error saving quiz:', error);
+                }
+            }),
+            {
+                pending: 'Saving Changes...',
+                success: 'Changes Saved!',
+                error: 'Error saving changes',
+            }
+        );    }, [
+        quizId, 
+        quizName, 
+        quizDescription, 
+        // db and toast are stable and don't need to be in deps
+        deletedQuestionIds, 
+        questionsList, 
+        setOriginalName, 
+        setOriginalDescription, 
+        setOriginalQuestionsList
+    ]);
+
+    const handleNextClick = useCallback(async () => {
         if (quizId && (quizName !== originalName || quizDescription !== originalDescription || questionsList !== originalQuestionsList)) {
             handleSaveChanges();
         }
@@ -332,8 +402,37 @@ function CreateQuiz() {
             );
         } else if (currentStep < Step.Publish) {
             setCurrentStep(currentStep + 1);
-        }
-    };
+        }    }, [
+        quizId, 
+        quizName, 
+        originalName, 
+        quizDescription, 
+        originalDescription, 
+        questionsList, 
+        originalQuestionsList,
+        handleSaveChanges,
+        currentStep,
+        // toast is stable and doesn't need to be in deps
+        status,
+        formattedDate,
+        startDate,
+        endDate,
+        timeNumber,
+        timeText,
+        convertToSeconds,
+        marksPerQ,
+        nMarksPerQ,
+        liveQuizNow,
+        userId,
+        isPremiumQuiz,
+        product,
+        router,
+        db,
+        deletedQuestionIds,
+        setOriginalName,
+        setOriginalDescription,
+        setCurrentStep
+    ]);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -362,74 +461,10 @@ function CreateQuiz() {
         timeNumber,
         timeText,
         isPremiumQuiz,
-        product
+        product,
+        handleNextClick
     ]);
-
-
-    const handleSaveChanges = async () => {
-        toast.promise(
-            new Promise(async (resolve, reject) => {
-                try {
-                    // Simulate delay
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    if (quizId) {
-                        // Update existing quiz document
-                        const quizRef = doc(db, 'quiz', quizId);
-                        await updateDoc(quizRef, {
-                            quizName,
-                            quizDescription,
-                        });
-
-                        // Update questions using batch
-                        const questionsCollectionRef = collection(quizRef, 'Questions');
-                        const batch = writeBatch(db);
-
-                        // Delete removed questions
-                        for (const deletedId of deletedQuestionIds) {
-                            const deleteRef = doc(questionsCollectionRef, deletedId);
-                            batch.delete(deleteRef);
-                        }
-                        // Process each question in the list
-                        for (const question of questionsList) {
-                            let questionRef;
-
-                            if (!question.questionId || question.questionId.startsWith('temp-')) {
-                                questionRef = doc(questionsCollectionRef);
-                            } else {
-                                questionRef = doc(questionsCollectionRef, question.questionId);
-                            }
-
-                            const questionData = {
-                                questionId: questionRef.id,
-                                question: question.question,
-                                options: question.options,
-                                correctAnswer: question.correctAnswer,
-                                answerExplanation: question.explanation,
-                                order: question.order !== undefined ? question.order : 0,
-                            };
-                            batch.set(questionRef, questionData);
-                        }
-
-                        await batch.commit();
-                        setOriginalName(quizName);
-                        setOriginalDescription(quizDescription);
-                        setOriginalQuestionsList(questionsList);
-                        resolve('Changes Saved Successfully!');
-                    }
-                } catch (error) {
-                    reject('Error in saving/updating quiz');
-                    console.error('Error saving quiz:', error);
-                }
-            }),
-            {
-                pending: 'Saving Changes...',
-                success: 'Changes Saved!',
-                error: 'Error saving changes',
-            }
-        );
-    };
-
-    const handleSaveClick = async () => {
+    const handleSaveClick = useCallback(async () => {
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
@@ -563,8 +598,26 @@ function CreateQuiz() {
                 success: 'Quiz Saved!',
                 error: 'Error saving quiz',
             }
-        );
-    };
+        );    }, [
+        quizId,
+        quizName,
+        quizDescription,
+        status,
+        liveQuizNow,
+        formattedDate,
+        startDate,
+        endDate,
+        timeNumber,
+        timeText,
+        // convertToSeconds is stable and doesn't need to be in deps
+        marksPerQ,
+        nMarksPerQ,
+        userId,
+        questionsList,
+        deletedQuestionIds,
+        db,
+        router
+    ]);
 
 
     const handlePreviousClick = () => {

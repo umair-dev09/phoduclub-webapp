@@ -44,7 +44,7 @@ function DeleteQuiz({ open, onClose, quizId, quizName }: DeleteTestProps) {
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [open, isFormValid]); // ✅ Runs when dialog opens/closes or input validity changes
+    }, [open, isFormValid, handleDeleteQuiz]); // ✅ Runs when dialog opens/closes or input validity changes
 
     return (
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >

@@ -100,7 +100,7 @@ function PrivateChatArea() {
 
       return () => unsubscribeUser();
     }
-  }, [chatUserId]);
+  }, [chatUserId, isAdmin]);
 
   useEffect(() => {
     if (pChatId) {
@@ -170,7 +170,7 @@ function PrivateChatArea() {
         fetchNotifications();
       }
     }
-  }, [chats, currentUserId]);
+  }, [chats, currentUserId, chatUserId]);
 
   const handleScroll = () => {
     if (containerRef.current && !isAutoScrolling.current) {

@@ -59,7 +59,7 @@ function EndDialog({ fromContent, contentId, onClose }: EndDialogProps) { // Use
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [onEnd]);
 
     return (
         <Modal isOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >

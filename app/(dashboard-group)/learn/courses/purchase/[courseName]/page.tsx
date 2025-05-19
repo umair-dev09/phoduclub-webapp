@@ -168,7 +168,7 @@ export default function CoursePurchasePage() {
 
       checkIfPurchased();
     }
-  }, [courseId, auth.currentUser]);
+  }, [courseId]);
 
   // Fetch content data from Firestore
   useEffect(() => {

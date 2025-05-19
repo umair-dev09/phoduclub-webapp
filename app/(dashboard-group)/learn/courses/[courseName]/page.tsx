@@ -180,7 +180,7 @@ function Course() {
     };
 
     checkCoursePurchased();
-  }, [courseId, auth.currentUser]);
+  }, [courseId]);
 
   // Fetch content data from Firestore
   useEffect(() => {
@@ -321,7 +321,7 @@ function Course() {
         unsubscribeRefs.forEach(unsubscribe => unsubscribe());
       };
     }
-  }, [courseId, auth.currentUser]);
+  }, [courseId]);
   // Add this useEffect after your existing useEffects
   useEffect(() => {
     // Only set initial content if no content is currently selected
@@ -397,7 +397,7 @@ function Course() {
     return () => {
       unsubscribers.forEach(unsubscribe => unsubscribe());
     };
-  }, [courseId, sections, auth.currentUser, selectedContent?.contentId]);
+  }, [courseId, sections, selectedContent?.contentId]);
 
   // ...existing code...
   // Fetch StudentsAttempted separately

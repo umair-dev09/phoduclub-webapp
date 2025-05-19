@@ -45,7 +45,7 @@ function DeleteCourse({ open, onClose, courseId, courseName }: DeleteCourseProps
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [open, isFormValid]);
+    }, [open, isFormValid, handleDeleteCourse]);
 
     return (
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >

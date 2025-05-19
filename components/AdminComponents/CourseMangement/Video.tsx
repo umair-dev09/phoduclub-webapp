@@ -133,27 +133,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             return "-";
         }
     };
-
-
-    useEffect(() => {
-        if (isOpen && contentId) {
-            fetchContentData(contentId || '');
-        }
-        else {
-            setLessonHeading('');
-            setLessonOverView('');
-            setVideoLink(null);
-            setProgress(null); // Reset progress
-            setFileName(null);
-            setDisscusionOpen(false);
-            setVideocipherid('');
-            setSelectedFile(null);
-            setLoading(false);
-
-        }
-    }, [isOpen, contentId]);
-
-    const fetchContentData = async (contentId: string) => {
+ const fetchContentData = async (contentId: string) => {
         try {
             const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
             const contentDocSnap = await getDoc(contentDocRef);
@@ -175,6 +155,26 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             toast.error("Error loading content data.");
         }
     };
+
+    useEffect(() => {
+        if (isOpen && contentId) {
+            fetchContentData(contentId || '');
+        }
+        else {
+            setLessonHeading('');
+            setLessonOverView('');
+            setVideoLink(null);
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setDisscusionOpen(false);
+            setVideocipherid('');
+            setSelectedFile(null);
+            setLoading(false);
+
+        }
+    }, [isOpen, contentId, fetchContentData]);
+
+   
 
     const handleChange = (content: string) => {
         setLessonOverView(content);
@@ -480,7 +480,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isOpen, isFormValid]);
+    }, [isOpen, isFormValid, handleSaveVideo]);
 
     return (
         <div>

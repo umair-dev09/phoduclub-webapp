@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -131,9 +131,18 @@ function Course() {
         key: string;
         direction: 'asc' | null | 'desc';
     }>({
-        key: 'publishedOn',
-        direction: 'desc'
+        key: 'publishedOn',        direction: 'desc'
     });
+
+    const statusMapping = useMemo<Record<Option, string[]>>(() => ({
+        'Saved': ['saved'],
+        'Live': ['live'],
+        'Scheduled': ['scheduled'],
+        'Pause': ['paused'],
+        'Finished': ['finished'],
+        'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
+    }), []);
+
 
     useEffect(() => {
         let filteredCourses = Courses;
@@ -215,7 +224,7 @@ function Course() {
         // Update state with filtered and sorted quizzes
         setData(filteredCourses);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, selectedDate, sortConfig]);
+    }, [searchTerm, checkedState, selectedDate, sortConfig, Courses, statusMapping]);
 
     const handleSort = (key: string) => {
         if (key === 'discountPrice' || key === 'publishedOn' || key === 'studentsPurchased') {
@@ -303,15 +312,7 @@ function Course() {
 
     const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
-    const statusMapping: Record<Option, string[]> = {
-        'Saved': ['saved'],
-        'Live': ['live'],
-        'Scheduled': ['scheduled'],
-        'Pause': ['paused'],
-        'Finished': ['finished'],
-        'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
-    };
-
+  
 
 
     // Format selected date as 'Nov 9, 2024'

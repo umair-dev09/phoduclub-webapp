@@ -22,7 +22,7 @@ function Remove({ open, onClose }: RemoveProps) { // Use the interface
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [onClose]);
     return (
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >
 

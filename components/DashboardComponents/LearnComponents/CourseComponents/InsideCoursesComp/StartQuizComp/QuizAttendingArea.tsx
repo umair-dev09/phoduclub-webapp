@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
@@ -116,7 +116,7 @@ function QuizAttendingArea({
             // Reset timer when bottom sheet closes
             setTimerStarted(false);
         }
-    }, [showBottomSheet, quizTime]);
+    }, [initializeTimer, showBottomSheet, quizTime]);
 
     // Separate timer countdown effect 
     useEffect(() => {
@@ -161,6 +161,10 @@ function QuizAttendingArea({
             contentRef.current.scrollTo({ top: 0, behavior: 'auto' });
         }
     }, [showBottomSheet]);
+   // Check if all questions have been answered
+    const areAllQuestionsAnswered = () => {
+        return questionStates.every(state => state.selectedOption !== null);
+    };
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -176,7 +180,7 @@ function QuizAttendingArea({
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [showBottomSheet, questionStates]); // ✅ Track question states
+    }, [areAllQuestionsAnswered, showBottomSheet, questionStates]); // ✅ Track question states
 
 
 
@@ -236,15 +240,11 @@ function QuizAttendingArea({
             setIsSubmitting(false);
         }
     };
-    // Check if all questions have been answered
-    const areAllQuestionsAnswered = () => {
-        return questionStates.every(state => state.selectedOption !== null);
-    };
-
-    const openBottomSheet = () => {
+ 
+    const openBottomSheet = useCallback(() => {
         onClose();
         setShowBottomSheet(true);
-    };
+    }, [onClose, setShowBottomSheet]);
 
     const handleSubmit = () => {
         console.log('Final Question States:', questionStates);
@@ -258,12 +258,12 @@ function QuizAttendingArea({
         setShowBottomSheet(false);
     };
 
-    const handleDialogSubmit = async () => {
+    const handleDialogSubmit = useCallback(async () => {
         setIsDialogOpen(false);
         // setIsOpen(false);
         setShowBottomSheet(false);
         await storeQuizAttempt();
-    };
+    }, [setIsDialogOpen, setShowBottomSheet, storeQuizAttempt]);
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === "Enter") {

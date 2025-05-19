@@ -47,46 +47,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
 
     const isFormValid = lessonHeading && lessonOverView && lessonContent ;
 
-
-
-
-
-
-    useEffect(() => {
-        if (isOpen && contentId) {
-            fetchContentData(contentId || '');
-        }
-        else {
-            setLessonHeading('');
-            setLessonOverView('');
-            setLessonContent('');
-            setPdfLink('');
-            setProgress(null); // Reset progress
-            setFileName(null);
-            setDisscusionOpen(false);
-            setValue('');
-            setLoading(false);
-
-        }
-    }, [isOpen, contentId]);
-
-    const extractFileNameFromUrl = (url: string): string => {
-        const decodedUrl = decodeURIComponent(url);
-        const parts = decodedUrl.split('/');
-        const fileNameWithToken = parts[parts.length - 1];
-        const fileName = fileNameWithToken.split('?')[0];
-        return fileName;
-    };
-
-    useEffect(() => {
-        if (pdfLink) {
-            const fileName = extractFileNameFromUrl(pdfLink);
-            setFileName(fileName);
-        }
-    }, [pdfLink]);
-
-
-    const fetchContentData = async (contentId: string) => {
+  const fetchContentData = async (contentId: string) => {
         try {
             const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
             const contentDocSnap = await getDoc(contentDocRef);
@@ -107,6 +68,45 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
             toast.error("Error loading content data.");
         }
     };
+
+
+
+
+    useEffect(() => {
+        if (isOpen && contentId) {
+            fetchContentData(contentId || '');
+        }
+        else {
+            setLessonHeading('');
+            setLessonOverView('');
+            setLessonContent('');
+            setPdfLink('');
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setDisscusionOpen(false);
+            setValue('');
+            setLoading(false);
+
+        }
+    }, [isOpen, contentId, fetchContentData]);
+
+    const extractFileNameFromUrl = (url: string): string => {
+        const decodedUrl = decodeURIComponent(url);
+        const parts = decodedUrl.split('/');
+        const fileNameWithToken = parts[parts.length - 1];
+        const fileName = fileNameWithToken.split('?')[0];
+        return fileName;
+    };
+
+    useEffect(() => {
+        if (pdfLink) {
+            const fileName = extractFileNameFromUrl(pdfLink);
+            setFileName(fileName);
+        }
+    }, [pdfLink]);
+
+
+  
 
     const handleChange = (content: string) => {
 
@@ -358,7 +358,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isOpen, isFormValid]);
+    }, [isOpen, isFormValid, handleSaveText]);
 
     return (
         <div>

@@ -1,5 +1,5 @@
 import styles from '../Profile.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
@@ -111,10 +111,9 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
       });
     } else {
       console.log('Recaptcha already rendered');
-    }
-  };
+    }  };
 
-  const onContinueClick = () => {
+  const onContinueClick = useCallback(() => {
     setUpRecaptcha();
     const appVerifier = recaptchaVerifierRef.current;
 
@@ -143,7 +142,8 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
     } else {
       console.error('No valid Phone Number');
     }
-  };
+  }, [userData?.phone, setIsOpen, setShowComponent, setIsOtpOpen]);
+  
   const handleResendOtp = async () => {
     setUpRecaptcha(); // Make sure recaptcha is set up
     const appVerifier = recaptchaVerifierRef.current;
@@ -183,7 +183,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen]);
+  }, [onContinueClick, isOpen]);
 
 
   return (

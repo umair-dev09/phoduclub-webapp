@@ -117,7 +117,7 @@ function MessageTypeArea({
     };
 
     fetchUsers();
-  }, []);
+  }, [channelMembers]);
 
   const highlightMentions = (value: string) => {
     const mentionRegex = /@(\w+)/g; // Match @username

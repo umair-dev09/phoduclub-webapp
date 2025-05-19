@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Collapsible from 'react-collapsible';
@@ -277,7 +277,7 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
 
-    const handleDeleteSection = async (sectionId: string) => {
+    const handleDeleteSection = useCallback(async (sectionId: string) => {
         try {
             // Create a reference to the specific section document
             const sectionRef = doc(db, 'course', courseId, 'sections', sectionId);
@@ -290,9 +290,9 @@ function CourseContent({ courseId }: CourseContentProps) {
         } catch (error) {
             console.error('Error deleting section:', error);
         }
-    };
+    }, [courseId]);
 
-    const handleDeleteContent = async (sectionId: string, contentId: string) => {
+    const handleDeleteContent = useCallback(async (sectionId: string, contentId: string) => {
         try {
             // Create a reference to the specific section document
             const sectionRef = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
@@ -305,7 +305,7 @@ function CourseContent({ courseId }: CourseContentProps) {
         } catch (error) {
             console.error('Error deleting section:', error);
         }
-    };
+    }, [courseId, setContentToDelete]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

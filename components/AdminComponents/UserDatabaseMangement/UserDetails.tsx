@@ -86,7 +86,7 @@ function UserDetails({ userId }: UserDetailsProps) {
             setLastName(nameParts[1] || '');
 
         }
-    });
+    }, [user]);
 
     const handleOpenDialog = () => {
         setOpenDialog(true);

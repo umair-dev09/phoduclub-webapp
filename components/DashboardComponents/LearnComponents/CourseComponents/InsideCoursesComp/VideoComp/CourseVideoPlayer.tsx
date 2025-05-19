@@ -74,7 +74,7 @@ function CourseVideoPlayer({ videoId }:VideoPlayerProps) {
     };
 
     fetchVideoData();
-  }, []);
+  }, [videoId]);
 
   const iframeSrc = videoData
     ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`

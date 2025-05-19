@@ -335,7 +335,7 @@ function TestPurchasePage() {
 
       checkIfPurchased();
     }
-  }, [testId, auth.currentUser]);
+  }, [testId]);
 
 
   const handleGoToCourse = () => {

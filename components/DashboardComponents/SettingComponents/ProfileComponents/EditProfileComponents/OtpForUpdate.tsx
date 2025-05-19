@@ -37,22 +37,6 @@ const InputHandler = ({
 }) => {
   const inputsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const inputs = inputsRef.current?.querySelectorAll("input");
-
-    if (inputs) {
-      inputs.forEach((input, index) => {
-        const handleInputWrapper = (e: Event) => handleInput(e, index);
-        input.addEventListener("input", handleInputWrapper);
-        input.addEventListener("keyup", handleKeyup);
-
-        return () => {
-          input.removeEventListener("input", handleInputWrapper);
-          input.removeEventListener("keyup", handleKeyup);
-        };
-      });
-    }
-  }, []);
 
   const handleInput = (e: Event, index: number) => {
     const target = e.target as HTMLInputElement;
@@ -76,6 +60,24 @@ const InputHandler = ({
 
     setIsButtonDisabled(!allFilled);
   };
+
+
+  useEffect(() => {
+    const inputs = inputsRef.current?.querySelectorAll("input");
+
+    if (inputs) {
+      inputs.forEach((input, index) => {
+        const handleInputWrapper = (e: Event) => handleInput(e, index);
+        input.addEventListener("input", handleInputWrapper);
+        input.addEventListener("keyup", handleKeyup);
+
+        return () => {
+          input.removeEventListener("input", handleInputWrapper);
+          input.removeEventListener("keyup", handleKeyup);
+        };
+      });
+    }
+  }, [handleInput]);
 
   const handleKeyup = (e: KeyboardEvent) => {
     const target = e.target as HTMLInputElement;

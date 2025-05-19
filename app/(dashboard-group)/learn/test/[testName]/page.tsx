@@ -138,7 +138,7 @@ function Test() {
             }
         };
         checkTestPurchased();
-    }, [testId, auth.currentUser]);
+    }, [testId]);
 
     // ----------------------------------------------------------------------------------------
     const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails | null } }>({});
@@ -330,7 +330,7 @@ function Test() {
             setSections([]);
             setAttemptsCount({});
         };
-    }, [currentPath, testId]);
+    }, [currentPath, testId, currentUserId]);
 
 
 

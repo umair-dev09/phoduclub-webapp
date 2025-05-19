@@ -63,7 +63,7 @@ function DeleteDialog({ open, onClose, fromContent, contentId, contentName }: De
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [open, isFormValid]);
+    }, [open, isFormValid, handleDeleteQuiz]);
 
 
     return (

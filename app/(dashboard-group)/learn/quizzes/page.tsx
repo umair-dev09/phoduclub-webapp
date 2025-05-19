@@ -4,7 +4,7 @@ import { auth, db } from "@/firebase";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import { collection, doc, getDoc, getDocs, onSnapshot, query } from "firebase/firestore";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // Add this interface at the top of your file, outside the component
 interface AttemptData {
     score?: number;
@@ -112,10 +112,9 @@ export default function MyQuiz() {
             }
         };
 
-        fetchPremiumAttempts();
-    }, [currentUserId]);
+        fetchPremiumAttempts();    }, [currentUserId]);
 
-    const fetchLeaderboardData = async (collectionPath: string, productId?: string) => {
+    const fetchLeaderboardData = useCallback(async (collectionPath: string, productId?: string) => {
         try {
             const usersRef = collection(db, "users");
             const allAttemptsData: any[] = [];
@@ -197,7 +196,7 @@ export default function MyQuiz() {
         } catch (error) {
             console.error("Error fetching leaderboard data:", error);
         }
-    };
+    }, [currentUserId]);
 
     useEffect(() => {
         if (!currentUserId) return;
@@ -210,7 +209,7 @@ export default function MyQuiz() {
                 fetchLeaderboardData('premiumQuizAttemptsData', selectedPremiumAttempt.productId);
             }
         }
-    }, [currentUserId, selectedAttemptFilter, premiumAttempts]);
+    }, [currentUserId, selectedAttemptFilter, premiumAttempts, fetchLeaderboardData]);
 
     const handleAttemptFilterChange = (filter: string) => {
         setSelectedAttemptFilter(filter);

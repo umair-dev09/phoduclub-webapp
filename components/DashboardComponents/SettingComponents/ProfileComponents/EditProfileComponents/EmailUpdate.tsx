@@ -35,6 +35,44 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to disable/enable the button
 
 
+ const handleButtonClick = () => {
+    setUpRecaptcha();
+    const appVerifier = recaptchaVerifierRef.current;
+    setIsLoading(true);
+    setIsButtonDisabled(true);
+    if (userData?.phone) {
+      toast.promise(
+        new Promise((resolve, reject) => {
+          signInWithPhoneNumber(auth, `${userData.phone}`, appVerifier)
+            .then((confirmationResult) => {
+              window.confirmationResult = confirmationResult;
+              setIsOpen(false);
+              setShowComponent(true);
+              setIsOtpOpen(true);
+              resolve('Otp Sent!');
+              setIsLoading(false);
+              setIsButtonDisabled(true);
+            })
+            .catch((error: any) => {
+              console.error('Error sending OTP', error);
+              reject(new Error('Failed to send OTP'));
+              setIsLoading(false);
+              setIsButtonDisabled(false);
+            });
+        }),
+        {
+          pending: 'Sending OTP...',
+          success: 'OTP sent successfully!',
+          error: 'Failed to send OTP',
+        }
+      );
+    } else {
+      console.error('No valid Phone Number');
+      setIsLoading(false);
+      setIsButtonDisabled(false);
+    }
+  };
+
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -50,7 +88,7 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, isButtonDisabled]);
+  }, [handleButtonClick, isOpen, isButtonDisabled]);
 
 
   useEffect(() => {
@@ -127,43 +165,7 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
     }
   };
 
-  const handleButtonClick = () => {
-    setUpRecaptcha();
-    const appVerifier = recaptchaVerifierRef.current;
-    setIsLoading(true);
-    setIsButtonDisabled(true);
-    if (userData?.phone) {
-      toast.promise(
-        new Promise((resolve, reject) => {
-          signInWithPhoneNumber(auth, `${userData.phone}`, appVerifier)
-            .then((confirmationResult) => {
-              window.confirmationResult = confirmationResult;
-              setIsOpen(false);
-              setShowComponent(true);
-              setIsOtpOpen(true);
-              resolve('Otp Sent!');
-              setIsLoading(false);
-              setIsButtonDisabled(true);
-            })
-            .catch((error: any) => {
-              console.error('Error sending OTP', error);
-              reject(new Error('Failed to send OTP'));
-              setIsLoading(false);
-              setIsButtonDisabled(false);
-            });
-        }),
-        {
-          pending: 'Sending OTP...',
-          success: 'OTP sent successfully!',
-          error: 'Failed to send OTP',
-        }
-      );
-    } else {
-      console.error('No valid Phone Number');
-      setIsLoading(false);
-      setIsButtonDisabled(false);
-    }
-  };
+ 
 
   const handleResendOtp = async () => {
     setUpRecaptcha(); // Make sure recaptcha is set up

@@ -163,13 +163,13 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
     const router = useRouter();
     let [showpremiumDialog, setShowpremiumDialog] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
-    const sectionMap = {
+    const sectionMap = React.useMemo(() => ({
         'overview': '#overview',
         'attempts-difficulty-analysis': '#Attempts',
         'attempts-over-3-hours': '#Attemptsoverthe3hours',
         'complete-analysis': '#CompleteAnalysis',
         'summary': '#Summary'
-    } as const;
+    } as const), []);
     const [attemptPopover, setAttemptPopover] = useState(false);
 
     const handleTabChange = React.useCallback((key: Key) => {
@@ -218,7 +218,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                 scrollContainer.removeEventListener("scroll", handleScroll);
             }
         };
-    }, [activeTab]);
+    }, [sectionMap, activeTab]);
 
 
 

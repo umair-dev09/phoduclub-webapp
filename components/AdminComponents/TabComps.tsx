@@ -41,7 +41,7 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [router]);
 
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
@@ -81,7 +81,7 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
     useEffect(() => {
         const savedState = localStorage.getItem('isSidebarCollapsed');
         setIsCollapsed(savedState === 'true');
-    }, []);
+    }, [setIsCollapsed]);
 
     useEffect(() => {
         localStorage.setItem('isSidebarCollapsed', isCollapsed.toString());

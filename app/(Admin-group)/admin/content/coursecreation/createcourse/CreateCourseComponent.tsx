@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
+import React, { useState, useEffect, useRef, SetStateAction, Dispatch, useCallback } from "react";
 import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
@@ -276,10 +276,7 @@ const CreateCourse = () => {
                 }
             );
         }
-    };
-
-    const handleCreateClick = async () => {
-
+    };    const handleCreateClick = useCallback(async () => {
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
@@ -331,8 +328,7 @@ const CreateCourse = () => {
                 error: 'Error Creating Course'
             }
         );
-    };
-    useEffect(() => {
+    }, [courseId, courseName, courseDescription, imageUrl, price, discountPrice, rating, numRatings, router]);    useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Enter") {
                 handleCreateClick();
@@ -343,7 +339,7 @@ const CreateCourse = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [courseName, courseDescription, imageUrl, price, discountPrice, rating, numRatings]); // Replace courseImage with imageUrl
+    }, [handleCreateClick]); // Now handleCreateClick is memoized with useCallback
 
 
     return (

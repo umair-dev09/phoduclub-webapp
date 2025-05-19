@@ -70,7 +70,7 @@ function GroupIcons() {
     });
 
     return () => unsubscribe();
-  }, [currentUserId]);
+  }, [currentUserId, db]);
 
   useEffect(() => {
     if (!user) return;

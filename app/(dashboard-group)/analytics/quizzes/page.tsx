@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { PieChart, Pie, Cell } from 'recharts';
@@ -114,10 +114,9 @@ function QuizAnalytics() {
             }
         };
 
-        fetchPremiumAttempts();
-    }, [currentUserId]);
+        fetchPremiumAttempts();    }, [currentUserId]);
 
-    const fetchLeaderboardData = async (collectionPath: string, productId?: string) => {
+    const fetchLeaderboardData = useCallback(async (collectionPath: string, productId?: string) => {
         try {
             const usersRef = collection(db, "users");
             const allAttemptsData: any[] = [];
@@ -199,11 +198,10 @@ function QuizAnalytics() {
                 }
             }
             setLoading(false);
-        } catch (error) {
-            console.error("Error fetching leaderboard data:", error);
+        } catch (error) {            console.error("Error fetching leaderboard data:", error);
             setLoading(false);
         }
-    };
+    }, [currentUserId, setCurrentUserRank, setLoading]);
 
     useEffect(() => {
         if (!currentUserId) return;
@@ -216,7 +214,7 @@ function QuizAnalytics() {
                 fetchLeaderboardData('premiumQuizAttemptsData', selectedPremiumAttempt.productId);
             }
         }
-    }, [currentUserId, selectedAttemptFilter, premiumAttempts]);
+    }, [currentUserId, selectedAttemptFilter, premiumAttempts, fetchLeaderboardData]);
 
     const handleAttemptFilterChange = (filter: string) => {
         setSelectedAttemptFilter(filter);

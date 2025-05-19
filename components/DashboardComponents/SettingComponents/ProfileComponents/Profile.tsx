@@ -48,6 +48,32 @@ function Profile() {
     const db = getFirestore();
     const router = useRouter();
 
+    const updateNameInFirestore = async () => {
+        const loadingToastId = toast.loading('Updating Name...');
+        setHasChanges(false);
+
+        if (user && nameInput !== originalName) {
+            try {
+                const userDocRef = doc(db, `users/${user.uid}`);
+                await updateDoc(userDocRef, {
+                    name: nameInput, // Update the name field
+                });
+                toast.dismiss(loadingToastId);
+                toast.success('Name updated successfully!');
+                setOriginalName(nameInput); // Reset original name to new value
+                setHasChanges(false); // Disable save button after saving
+                setIsEditing(false); // Exit editing mode
+            } catch (error) {
+                console.error('Error updating name:', error);
+                toast.dismiss(loadingToastId);
+                toast.error('Failed to update name. Please try again or contact support if the issue persists.', {
+                    autoClose: 5000,
+                    position: 'top-center'
+                });
+            }
+        }
+    };
+
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === "Enter" && hasChanges) { // ✅ Only trigger when there are changes
@@ -62,7 +88,7 @@ function Profile() {
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [isEditing, hasChanges]);
+    }, [updateNameInFirestore, isEditing, hasChanges, router]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -145,31 +171,6 @@ function Profile() {
         setHasChanges(e.target.value !== originalName); // Compare with original name
     };
 
-    const updateNameInFirestore = async () => {
-        const loadingToastId = toast.loading('Updating Name...');
-        setHasChanges(false);
-
-        if (user && nameInput !== originalName) {
-            try {
-                const userDocRef = doc(db, `users/${user.uid}`);
-                await updateDoc(userDocRef, {
-                    name: nameInput, // Update the name field
-                });
-                toast.dismiss(loadingToastId);
-                toast.success('Name updated successfully!');
-                setOriginalName(nameInput); // Reset original name to new value
-                setHasChanges(false); // Disable save button after saving
-                setIsEditing(false); // Exit editing mode
-            } catch (error) {
-                console.error('Error updating name:', error);
-                toast.dismiss(loadingToastId);
-                toast.error('Failed to update name. Please try again or contact support if the issue persists.', {
-                    autoClose: 5000,
-                    position: 'top-center'
-                });
-            }
-        }
-    };
     const onRemoveClick = async () => {
         const loadingToastId = toast.loading('Submitting responses...');
         setHasChanges(false);

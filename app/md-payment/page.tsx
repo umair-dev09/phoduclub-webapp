@@ -3,9 +3,9 @@
 
 import CashfreeCheckout from '@/components/CashfreeCheckout';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-export default function MdPayment() {
+function MdPaymentContent() {
   // State to store the URL parameters
   const [params, setParams] = useState({
     pId: '',
@@ -62,9 +62,16 @@ export default function MdPayment() {
           />
 
         <p className="text-center text-gray-500 font-normal text-[14px] mt-5 px-6 ">Please complete your payment using the button above. 
-        Once done, you'll be notified and can return to the mobile app, where your course or test series will be automatically updated.
+        Once done, you&apos;ll be notified and can return to the mobile app, where your course or test series will be automatically updated.
         </p>
       </div>
-    </div>
+    </div>  );
+}
+
+export default function MdPayment() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+      <MdPaymentContent />
+    </Suspense>
   );
 }

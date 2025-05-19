@@ -159,7 +159,7 @@ function TestAnalytics() {
             }
         };
         checkTestPurchased();
-    }, [testId, auth.currentUser]);
+    }, [testId]);
 
     // ----------------------------------------------------------------------------------------
     const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails[] } }>({});
@@ -429,7 +429,7 @@ function TestAnalytics() {
             setSections([]);
             setAttemptsCount({});
         };
-    }, [currentPath, testId]);
+    }, [currentPath, testId, currentUserId]);
 
     const handleNavigationClick = (index: number) => {
         setCurrentPath(prev => prev.slice(0, index + 1));

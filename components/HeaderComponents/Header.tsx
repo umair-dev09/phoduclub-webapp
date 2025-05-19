@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
 import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { Skeleton } from "@nextui-org/skeleton";
 import LoadingData from '../Loading';
@@ -61,7 +61,7 @@ function Header() {
         return () => unsubscribeAuth();
     }, [db, router]);
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         const loadingToastId = toast.loading('Logged out...');
         setIsLogoutButtonDisabled(true);
         try {
@@ -74,7 +74,7 @@ function Header() {
             toast.error("Error logging out. Please try again.");
             console.error("Error logging out:", error);
         }
-    };
+    }, [router]);
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === "Enter" && logoutdialog) {

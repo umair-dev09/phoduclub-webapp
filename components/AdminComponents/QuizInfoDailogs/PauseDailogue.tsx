@@ -60,7 +60,7 @@ function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [onPause]);
 
 
 

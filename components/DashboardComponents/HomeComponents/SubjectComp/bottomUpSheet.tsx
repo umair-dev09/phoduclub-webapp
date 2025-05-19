@@ -143,7 +143,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
   };
 
   // Save all changes to Firestore
-  const handleSave = async () => {
+  const handleSave = React.useCallback(async () => {
     const loadingToastId = toast.loading('Submitting your responses...');
     setHasUnsavedChanges(true);
 
@@ -185,7 +185,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
       toast.dismiss(loadingToastId);
       toast.error('Failed to save changes. Please try again.');
     }
-  };
+  }, [currentUserId, chapters]);
 
   // Calculate progress percentage
   const calculateProgress = (progress: StudentProgress): number => {

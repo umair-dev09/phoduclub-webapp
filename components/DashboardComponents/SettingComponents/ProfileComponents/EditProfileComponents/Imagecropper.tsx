@@ -239,12 +239,15 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
                   aspect={ASPECT_RATIO}
                   minWidth={MIN_DIMENSION}
                 >
-                  <img
+                  <Image
                     ref={imgRef}
                     src={imgSrc}
                     alt="Upload"
                     style={{ maxHeight: '350px' }}
                     onLoad={onImageLoad}
+                    width={500}
+                    height={350}
+                    unoptimized={true}
                   />
                 </ReactCrop>
                 <button

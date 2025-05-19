@@ -292,7 +292,7 @@ function User() {
             const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
             setUserId(userId);
         }
-    });
+    }, [isEditing, firstName, lastName, phone]);
 
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);

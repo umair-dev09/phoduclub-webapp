@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LoadingData from '@/components/Loading';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     Pagination,
     PaginationContent,
@@ -124,12 +124,21 @@ const Quizz = () => {
         Finished: false,
         Canceled: false,
     });
-    const selectedCount = Object.values(checkedState).filter(Boolean).length;
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    const selectedCount = Object.values(checkedState).filter(Boolean).length;    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
+    // Define status mapping with useMemo so it doesn't change on every render
+    const statusMapping = useMemo<Record<Option, string[]>>(() => ({
+        Saved: ['saved'],
+        Live: ['live'],
+        Scheduled: ['scheduled'],
+        Pause: ['paused'],    // Maps to 'paused' status in lowercase
+        Finished: ['finished'],
+        Canceled: ['ended']   // Maps to 'ended' status in lowercase
+    }), []);
+    
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = () => {
@@ -222,7 +231,7 @@ const Quizz = () => {
 
         setData(filteredQuizzes);
         setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
+    }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig, statusMapping]);
 
     const handleSort = (key: string) => {
         if (key === 'questions' || key === 'publishedOn' || key === 'students') {
@@ -322,15 +331,6 @@ const Quizz = () => {
     // Handlers for ViewAnalytics dialog
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
-
-    const statusMapping: Record<Option, string[]> = {
-        Saved: ['saved'],
-        Live: ['live'],
-        Scheduled: ['scheduled'],
-        Pause: ['paused'],    // Maps to 'paused' status in lowercase
-        Finished: ['finished'],
-        Canceled: ['ended']   // Maps to 'ended' status in lowercase
-    };
 
 
     const toggleCheckbox = (option: Option) => {

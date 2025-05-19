@@ -4,7 +4,7 @@ import Image from "next/image";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select, { SingleValue } from 'react-select';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from 'react-toastify';
 import { setDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase';
@@ -45,15 +45,14 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
         { value: 'JEE', label: 'JEE' },
         { value: 'SRMJEEE', label: 'SRMJEEE' },
         { value: 'COMEDK', label: 'COMEDK' },
-        { value: 'KCET', label: 'KCET' },
-        { value: 'VITEEE', label: 'VITEEE' },
+        { value: 'KCET', label: 'KCET' },        { value: 'VITEEE', label: 'VITEEE' },
         { value: 'MET', label: 'MET' },
     ];
-    const years: Option[] = [
+    const years = useMemo(() => [
         { value: '2024', label: '2024' },
         { value: '2025', label: '2025' },
         { value: '2026', label: '2026' },
-    ];
+    ], []);
     const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
     type CustomState = {
         isSelected: boolean;
@@ -75,11 +74,10 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
                 value: exam,
                 label: exam,
             }));
-            setSelectedExams(defaultExams);
-        }
+            setSelectedExams(defaultExams);        }
         const defaultYear = years.find(year => year.value === targetYear);
         setSelectedYear(defaultYear || null);
-    }, [1]);
+    }, [name, email, userIdd, phonee, profilePic, targetExams, targetYear]);
 
     const handleEditUser = async () => {
         const fullName = `${firstName} ${lastName}`;

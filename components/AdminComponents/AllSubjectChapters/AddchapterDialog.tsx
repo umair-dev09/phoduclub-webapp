@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
@@ -40,8 +40,9 @@ function Allsubject({ onClose, open, subject, chapterId, chapterName, priority, 
         setIsFocused(false); // Remove focus state
     };
 
-    const handleAddChapter = async () => {
+    const isFormValid = chapterName && priority;
 
+    const handleAddChapter = useCallback(async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
 
         setLoading(true); // Start loading
@@ -73,9 +74,7 @@ function Allsubject({ onClose, open, subject, chapterId, chapterName, priority, 
         } finally {
             setLoading(false); // End loading
         }
-    };
-
-    const isFormValid = chapterName && priority;
+    }, [isFormValid, loading, chapterId, chapterName, priority, subject, onClose]);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {

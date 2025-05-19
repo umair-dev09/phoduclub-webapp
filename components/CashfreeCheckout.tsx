@@ -86,7 +86,7 @@ export default function CashfreeCheckout({
     <>
       <Script 
         src="https://sdk.cashfree.com/js/v3/cashfree.js"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
       />
       
       <div className="space-y-4">

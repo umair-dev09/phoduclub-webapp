@@ -116,17 +116,16 @@ function CustomerCare() {
         dotColor: string;
         textColor: string;
     }) => {
-        setSelectedforpriority(status);
-    };
+        setSelectedforpriority(status);    };
 
-    const statusMapping: Record<Option, string[]> = {
+    const statusMapping = useMemo<Record<Option, string[]>>(() => ({
         Latest: ['Latest'],
         Opened: ['Opened'],
         Resolved: ['Resolved'],
         Reopened: ['Reopened'],    // Maps to 'paused' status in lowercase
         Blocker: ['Blocker'],
         Replied: ['Replied']   // Maps to 'ended' status in lowercase
-    };
+    }), []);
 
     const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
         Latest: false,
@@ -205,7 +204,7 @@ function CustomerCare() {
         // Update state with filtered and sorted quizzes
         setData(filteredCustomerCare);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, customerCare, selectedDate]);
+    }, [searchTerm, checkedState, customerCare, selectedDate, statusMapping]);
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate

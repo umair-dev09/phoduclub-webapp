@@ -131,7 +131,7 @@ function QuizAttendBottomSheet({
             // Reset timer when bottom sheet closes
             setTimerStarted(false);
         }
-    }, [showBottomSheet, quizTime]);
+    }, [initializeTimer, showBottomSheet, quizTime]);
 
     // Separate timer countdown effect 
     useEffect(() => {

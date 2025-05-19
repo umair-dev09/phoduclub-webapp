@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/TestSeriesInfo";
@@ -144,10 +144,9 @@ const CreateTestSeries = () => {
             console.error("Error fetching test data:", error);
             toast.error("Error loading test data.");
         }
-    };
-    const currentDate = new Date();
+    };    const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
-    const handleNextClick = async () => {
+    const handleNextClick = useCallback(async () => {
 
         if (testId && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '')) && (
             name !== originalName || description !== originalDescription || image !== originalImage || price !== originalPrice || discountPrice !== originalDiscountPrice || rating !== originalRating || noOfRating !== originalNoOfRating || isInCourse !== originalIsInCourse || selectedCourses !== originalSelectedCourses
@@ -341,13 +340,58 @@ const CreateTestSeries = () => {
                         error: 'Error Creating Test Series'
                     }
                 );
-            }
-        }
+            }        }
 
         else if (currentStep < Step.Perference) {
             setCurrentStep(currentStep + 1);
         }
-    };
+    }, [
+        testId, 
+        isInCourse, 
+        selectedCourses, 
+        price, 
+        discountPrice, 
+        rating, 
+        noOfRating,
+        name, 
+        originalName, 
+        description, 
+        originalDescription, 
+        image, 
+        originalImage, 
+        originalPrice, 
+        originalDiscountPrice, 
+        originalRating, 
+        originalNoOfRating, 
+        originalIsInCourse, 
+        originalSelectedCourses,
+        currentStep, 
+        status,
+        liveQuizNow,
+        formattedDate,
+        startDate,
+        endDate,
+        selectedExams,
+        selectedYears,
+        userId,
+        router,
+        db,
+        setOriginalName,
+        setOriginalDescription,
+        setOriginalImage,
+        setOriginalPrice,
+        setOriginalDiscountPrice,
+        setOriginalRating,
+        setOriginalNoOfRating,
+        setOriginalIsInCourse,
+        setOriginalSelectedCourses,
+        setCurrentStep,
+        setStartDate,
+        setEndDate,
+        setLiveQuizNow,
+        setSelectedExams,        setSelectedYears,
+        // db, toast, arrayUnion, arrayRemove, and Step are stable and don't need to be in deps
+    ]);
 
     const handlePreviousClick = () => {
         if (currentStep > Step.TestSeriesInfo) {
@@ -415,7 +459,7 @@ const CreateTestSeries = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [isNextButtonDisabled, currentStep]);
+    }, [isNextButtonDisabled, currentStep, handleNextClick]);
 
 
 

@@ -295,6 +295,292 @@ function ReviewTestView() {
     const [showBonusButton, setShowBonusButton] = useState(false);
     const [unlockbonusquestion, setUnlockbonusquestion] = useState(false);
     // Add warning when user tries to close tab during test
+
+
+  const handleSubmit = async () => {
+        const loadingToastId = toast.loading('Submitting your test responses...');
+        setIsSubmitButtonDisabled(true);
+        updateCurrentQuestionTime();
+
+        if (!currentUserId) {
+            toast.dismiss(loadingToastId);
+            toast.error('User authentication required');
+            setIsSubmitButtonDisabled(false);
+            return;
+        }
+
+        // Helper function to filter questions and create states with proper type checking
+const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
+    return questions.reduce((acc: { questions: Question[]; states: QuestionState[] }, question, index) => {
+      // Only include non-bonus questions OR bonus questions if they're unlocked
+      if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
+        acc.questions.push(question);
+        // Ensure we have a valid state object
+        const state = states[index] || {
+          questionId: question.questionId,
+          status: 'not-visited' as const,
+          answered: false,
+          selectedOption: null,
+          answeredCorrect: null,
+          spentTime: 0,
+          allotedTime: calculateAllotedTime(question.difficulty),
+          remarks: '-',
+          question: question.question,
+          difficulty: question.difficulty,
+          isBonus: question.isBonus,
+          order: question.order,
+        };
+        acc.states.push(state);
+      }
+      return acc;
+    }, { questions: [], states: [] });
+  };
+  
+
+
+       // Update getFinalQuestionData with null checks
+        const getFinalQuestionData = (states: QuestionState[]) =>
+            states.map((state) => ({
+            ...state,
+            allotedTime: state.allotedTime || calculateAllotedTime(state.difficulty),
+            spentTime: state.spentTime || 0,
+            remarks: determineRemarks(
+                state.allotedTime || calculateAllotedTime(state.difficulty),
+                state.spentTime || 0,
+                state.answeredCorrect || null,
+                state.answered || false
+            )
+            }));
+
+        // Update processQuestions function with proper type checking
+const processQuestions = () => {
+    if (currentSection?.isUmbrellaTest) {
+      return subSections.map((section) => {
+        if (!section.questions || !section.states) {
+          return {
+            ...section,
+            questions: [],
+            states: [],
+            hasBonusQuestions: false
+          };
+        }
+  
+        const filtered = filterQuestionsAndStates(
+          section.questions,
+          section.states
+        );
+  
+        return {
+          ...section,
+          questions: filtered.questions,
+          states: getFinalQuestionData(filtered.states),
+          hasBonusQuestions: showBonusQuestions && section.questions.some(q => q.isBonus)
+        };
+      });
+    } else {
+      // Ensure questions and questionStates are valid arrays
+      const validQuestions = questions || [];
+      const validStates = questionStates || [];
+      const filtered = filterQuestionsAndStates(validQuestions, validStates);
+  
+      return {
+        states: getFinalQuestionData(filtered.states),
+        hasBonusQuestions: showBonusQuestions && validQuestions.some(q => q.isBonus)
+      };
+    }
+  };
+
+
+        // Calculate metrics including only relevant questions
+        const calculateMetrics = (states: QuestionState[], questions: Question[], section?: Section) => {
+            const totalQuestions = states.length;
+            const attemptedQuestions = states.filter(q => q.answered).length;
+            const correctAnswers = states.filter(q => q.answeredCorrect).length;
+            const incorrectAnswers = attemptedQuestions - correctAnswers;
+
+            const marksPerCorrect = parseFloat(section?.marksPerQ || currentSection?.marksPerQ || "0");
+            const marksPerIncorrect = parseFloat(section?.nMarksPerQ || currentSection?.nMarksPerQ || "0");
+
+            const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
+            const maxPossibleScore = totalQuestions * marksPerCorrect;
+            const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
+
+            return {
+                attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
+                answeredCorrect: `${correctAnswers}/${totalQuestions}`,
+                answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
+                score: `${totalScore}/${maxPossibleScore}`,
+                accuracy: `${accuracy.toFixed(2)}%`
+            };
+        };
+
+        try {
+            let currentPath = `testseries/${tId}`;
+            for (const sectionId of sections) {
+                currentPath += `/sections/${sectionId}`;
+            }
+            currentPath += `/attempts`;
+
+            const batch = writeBatch(db);
+            const attemptsRef = collection(db, currentPath);
+            const userAttempts = await getDocs(
+                query(attemptsRef, where('userId', '==', currentUserId))
+            );
+            const attemptNumber = userAttempts.size + 1;
+            const processedQuestions = processQuestions();
+
+            if (currentSection?.isUmbrellaTest) {
+                const mainAttemptRef = doc(attemptsRef);
+                const combinedStates = (processedQuestions as SubSection[])
+                    .flatMap(section => section.states || []);
+                const combinedQuestions = (processedQuestions as SubSection[])
+                    .flatMap(section => section.questions || []);
+
+                const combinedMetrics = calculateMetrics(combinedStates, combinedQuestions);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+
+                const mainAttemptData = {
+                    attemptDateAndTime: serverTimestamp(),
+                    isUmbrellaTest: true,
+                    testTime: currentSection.testTime,
+                    timeTaken,
+                    userId: currentUserId,
+                    attemptNumber,
+                    bonusQuestionsAttempted: showBonusQuestions,
+                    ...combinedMetrics,
+                    questions: combinedStates
+                };
+
+                batch.set(mainAttemptRef, mainAttemptData);
+
+                // Process sub-attempts
+                const subattemptsRef = collection(mainAttemptRef, 'subattempts');
+                (processedQuestions as SubSection[]).forEach((section) => {
+                    const sectionMetrics = calculateMetrics(
+                        section.states || [],
+                        section.questions || [],
+                        section
+                    );
+                    const subattemptRef = doc(subattemptsRef);
+                    batch.set(subattemptRef, {
+                        sectionId: section.id,
+                        sectionName: section.sectionName,
+                        timeTaken: getTotalTimeSpent(subsectionTimers[section.id] || { timeSpent: 0, lastStartTime: 0 }),
+                        bonusQuestionsAttempted: showBonusQuestions,
+                        ...sectionMetrics,
+                        questions: section.states
+                    });
+                });
+            } else {
+                // Regular test submission
+                const filtered = processedQuestions as { states: QuestionState[] };
+                const metrics = calculateMetrics(filtered.states, questions);
+                const attemptRef = doc(attemptsRef);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+
+                batch.set(attemptRef, {
+                    attemptDateAndTime: serverTimestamp(),
+                    isUmbrellaTest: false,
+                    testTime: currentSection?.testTime,
+                    timeTaken,
+                    userId: currentUserId,
+                    attemptNumber,
+                    bonusQuestionsAttempted: showBonusQuestions,
+                    ...metrics,
+                    questions: filtered.states
+                });
+            }
+
+            await batch.commit();
+
+            // Success handling and UI updates
+            toast.dismiss(loadingToastId);
+            toast.success('Test submitted successfully! Redirecting to results...', {
+                autoClose: 3000,
+                position: 'top-center'
+            });
+            // Update UI state after submission
+            if (currentSection?.isUmbrellaTest) {
+                const processedQuestions = processQuestions() as SubSection[];
+                const combinedStates = processedQuestions.flatMap(section => section.states || []);
+                const combinedQuestions = processedQuestions.flatMap(section => section.questions || []);
+
+                // Calculate metrics only for questions that should be included
+                const combinedMetrics = calculateMetrics(combinedStates, combinedQuestions);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+
+                // Update question states based on processed data
+                if (Array.isArray(combinedStates)) {
+                    if (!('states' in (combinedStates[0] || {}))) {
+                        setQuestionStates(combinedStates as QuestionState[]);
+                    } else {
+                        const flattenedStates = combinedStates.flatMap(section =>
+                            'states' in section ? section.states || [] : [section]
+                        );
+                        setQuestionStates(flattenedStates as QuestionState[]);
+                    }
+                }
+
+                // Update all other state values
+                setQuestions(combinedQuestions);
+                setAttemptedQuestions(combinedMetrics.attemptedQuestions);
+                setAnsweredCorrect(combinedMetrics.answeredCorrect);
+                setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
+                setScore(combinedMetrics.score);
+                setAccuracy(combinedMetrics.accuracy);
+                setTimeTaken(timeTaken);
+                setTestTime(currentSection?.testTime ?? 0);
+
+            } else {
+                // Handle regular test
+                const processed = processQuestions() as { states: QuestionState[] };
+                const relevantQuestions = questions.filter(q =>
+                    !q.isBonus || (q.isBonus && showBonusQuestions)
+                );
+
+                const metrics = calculateMetrics(processed.states, relevantQuestions);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+
+                // Update states for regular test
+                setQuestionStates(processed.states);
+                setAttemptedQuestions(metrics.attemptedQuestions);
+                setAnsweredCorrect(metrics.answeredCorrect);
+                setAnsweredIncorrect(metrics.answeredIncorrect);
+                setScore(metrics.score);
+                setAccuracy(metrics.accuracy);
+                setTimeTaken(timeTaken);
+                setTestTime(currentSection?.testTime ?? 0);
+            }
+
+            // Disable submit button and handle modal transition
+            setIsSubmitButtonDisabled(true);
+            setTimeout(() => {
+                onCloseFirst();
+                onOpenSecond();
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error in handleSubmit:', error);
+            toast.dismiss(loadingToastId);
+            toast.error('Failed to submit test. Please try again.', {
+                autoClose: 5000,
+                position: 'top-center'
+            });
+            setIsSubmitButtonDisabled(false);
+        }
+    };
+
+       const handleTimeOver = useCallback(() => {
+            setIsTimeOver(true);
+            setError("Time's up! Please submit your test.");
+            handleSubmit();
+            console.log("Time's up!");
+        }, [handleSubmit]);
+
+
+
+
+
     useEffect(() => {
         // Only add the warning if the test is in progress
         if (!isTimeOver && !isInitialLoading) {
@@ -353,7 +639,7 @@ function ReviewTestView() {
         if (currentSection && !timerStarted) {
             initializeTimer(currentSection);
         }
-    }, [currentSection, subSections]);
+    }, [currentSection, subSections, timerStarted, initializeTimer]);
 
     // Separate timer countdown effect 
     useEffect(() => {
@@ -374,7 +660,7 @@ function ReviewTestView() {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timerStarted, remainingTime]);
+    }, [timerStarted, remainingTime, handleTimeOver]);
 
     const getTotalTimeSpent = (timer: SubSectionTimer): number => {
         if (!timer) return 0;
@@ -437,7 +723,7 @@ function ReviewTestView() {
         };
 
         fetchUserData();
-    }, []);
+    }, [currentUserId]);
 
     const fetchQuestionsForSection = async (path: string) => {
         const sectionRef = doc(db, path);
@@ -545,7 +831,9 @@ function ReviewTestView() {
         showBonusQuestions,
         currentSection?.isUmbrellaTest,
         bonusQuestions,
-        activeSubSectionIndex // Add this dependency
+        activeSubSectionIndex,
+        checkAllSubsectionsAttempted
+
     ]);
     const checkForBonusQuestions = () => {
         if (!currentSection?.isUmbrellaTest) {
@@ -855,13 +1143,8 @@ function ReviewTestView() {
         return () => {
             isMounted = false;
         };
-    }, [tId, sections]);
-    const handleTimeOver = useCallback(() => {
-        setIsTimeOver(true);
-        setError("Time's up! Please submit your test.");
-        handleSubmit();
-        console.log("Time's up!");
-    }, []);
+    }, [tId, sections, fetchQuestionsForSection, subsectionTimers,updateCurrentQuestionTime]);
+ 
     const updateQuestionState = (index: number, updates: Partial<QuestionState>, subSectionIndex?: number) => {
         if (currentSection?.isUmbrellaTest && typeof subSectionIndex === 'number') {
             // Update the subSection's stored states
@@ -1133,486 +1416,8 @@ function ReviewTestView() {
     }, [currentQuestionIndex, activeSubSectionIndex]);
 
 
-    // const handleSubmit = async () => {
-    //     const loadingToastId = toast.loading('Submitting your test responses...');
-    //     setIsSubmitButtonDisabled(true);
-    //     updateCurrentQuestionTime();
 
-    //     if (!currentUserId) {
-    //       toast.dismiss(loadingToastId);
-    //       toast.error('User authentication required');
-    //       setIsSubmitButtonDisabled(false);
-    //       return;
-    //     }
-
-    //     // Enhanced function to calculate remarks for each question
-    //     const getFinalQuestionData = (states: QuestionState[]) =>
-    //       states.map((state) => ({
-    //         ...state,
-    //         remarks: determineRemarks(
-    //           state.allotedTime,
-    //           state.spentTime,
-    //           state.answeredCorrect,
-    //           state.answered
-    //         )
-    //       }));
-
-    //     // Process questions for both regular and umbrella tests
-    //     const processQuestions = () => {
-    //         if (currentSection?.isUmbrellaTest) {
-    //           return subSections.map((section) => ({
-    //             ...section,
-    //             states: getFinalQuestionData(section.states || []),
-    //             hasBonusQuestions: section.questions?.some(q => q.isBonus) || false
-    //           }));
-    //         } else {
-    //           return {
-    //             states: getFinalQuestionData(questionStates),
-    //             hasBonusQuestions: questions.some(q => q.isBonus)
-    //           };
-    //         }
-    //       };
-
-
-    //     const processedQuestions = processQuestions();
-    //     const combinedQuestionsData = currentSection?.isUmbrellaTest
-    //       ? (processedQuestions as SubSection[]).flatMap((section) => section.states || [])
-    //       : processedQuestions;
-
-    //     try {
-    //       let currentPath = `testseries/${tId}`;
-    //       for (const sectionId of sections) {
-    //         currentPath += `/sections/${sectionId}`;
-    //       }
-    //       currentPath += `/attempts`;
-
-    //       const batch = writeBatch(db);
-    //       const attemptsRef = collection(db, currentPath);
-    //       const userAttempts = await getDocs(
-    //         query(attemptsRef, where('userId', '==', currentUserId))
-    //       );
-    //       const attemptNumber = userAttempts.size + 1;
-
-    //       const calculateMetrics = (questions: any[], section?: Section) => {
-    //         const totalQuestions = questions.length;
-    //         const attemptedQuestions = questions.filter(q => q.answered).length;
-    //         const correctAnswers = questions.filter(q => q.answeredCorrect).length;
-    //         const incorrectAnswers = attemptedQuestions - correctAnswers;
-    //         let marksPerCorrect, marksPerIncorrect;
-
-    //         if (section?.isParentUmbrellaTest) {
-    //           marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
-    //           marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
-    //         } else if (currentSection?.isUmbrellaTest) {
-    //           marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
-    //           marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
-    //         } else {
-    //           marksPerCorrect = parseFloat(section?.marksPerQ || "0");
-    //           marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
-    //         }
-
-    //         const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
-    //         const maxPossibleScore = totalQuestions * marksPerCorrect;
-    //         const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
-
-    //         return {
-    //           attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
-    //           answeredCorrect: `${correctAnswers}/${totalQuestions}`,
-    //           answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
-    //           score: `${totalScore}/${maxPossibleScore}`,
-    //           accuracy: `${accuracy.toFixed(2)}%`
-    //         };
-    //       };
-
-    //       if (currentSection?.isUmbrellaTest) {
-    //         const mainAttemptRef = doc(attemptsRef);
-    //         const combinedMetrics = calculateMetrics(combinedQuestionsData);
-    //         const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-    //         const mainAttemptData = {
-    //           attemptDateAndTime: serverTimestamp(),
-    //           isUmbrellaTest: true,
-    //           testTime: currentSection?.testTime,
-    //           timeTaken: timeTaken,
-    //           userId: currentUserId,
-    //           attemptNumber,
-    //           ...combinedMetrics,
-    //           questions: combinedQuestionsData // Final processed question states (with remarks)
-    //         };
-
-    //         batch.set(mainAttemptRef, mainAttemptData);
-
-    //         const getFinalSubsectionTimes = () => {
-    //           const finalTimes: { [key: string]: number } = {};
-    //           Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-    //             finalTimes[sectionId] = getTotalTimeSpent(timer);
-    //           });
-    //           return finalTimes;
-    //         };
-    //         const sectionTimes = getFinalSubsectionTimes();
-    //         const subattemptsRef = collection(mainAttemptRef, 'subattempts');
-
-    //         // Process each subsection with remarks
-    //         processedQuestions.forEach((section: any) => {
-    //           const sectionMetrics = calculateMetrics(section.states || [], section);
-    //           const subattemptRef = doc(subattemptsRef);
-    //           batch.set(subattemptRef, {
-    //             sectionId: section.id,
-    //             sectionName: section.sectionName,
-    //             timeTaken: sectionTimes[section.id] || 0,
-    //             // testTime: section.testTime,
-    //             ...sectionMetrics,
-    //             questions: section.states // These now include remarks
-    //           });
-    //         });
-    //       } else {
-    //         const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
-    //         const attemptRef = doc(attemptsRef);
-    //         const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-    //         batch.set(attemptRef, {
-    //           attemptDateAndTime: serverTimestamp(),
-    //           isUmbrellaTest: false,
-    //           testTime: currentSection?.testTime,
-    //           timeTaken: timeTaken,
-    //           userId: currentUserId,
-    //           attemptNumber,
-    //           ...metrics,
-    //           questions: processedQuestions // These now include remarks
-    //         });
-    //       }
-
-    //       await batch.commit();
-
-    //       toast.dismiss(loadingToastId);
-    //       toast.success('Test submitted successfully! Redirecting to results...', {
-    //         autoClose: 3000,
-    //         position: 'top-center'
-    //       });
-
-    //       // Update UI state after submission
-    //       if (currentSection?.isUmbrellaTest) {
-    //         const combinedMetrics = calculateMetrics(combinedQuestionsData);
-    //         const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-    //         const allQuestions = subSections.flatMap(section => section.questions || []);
-    //         // IMPORTANT: Set the local questionStates to match exactly what was stored in Firestore.
-    //         // Ensure the data is of type QuestionState[] before setting it
-    //         if (Array.isArray(combinedQuestionsData) && !('states' in combinedQuestionsData[0])) {
-    //             setQuestionStates(combinedQuestionsData as QuestionState[]);
-    //         } else if (Array.isArray(combinedQuestionsData)) {
-    //             // Handle umbrella test case by flattening the states
-    //             const flattenedStates = (combinedQuestionsData as any[]).flatMap(section => section.states || []);
-    //             setQuestionStates(flattenedStates);
-    //         }
-
-    //         setAttemptedQuestions(combinedMetrics.attemptedQuestions);
-    //         setQuestions(allQuestions);
-    //         setAnsweredCorrect(combinedMetrics.answeredCorrect);
-    //         setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
-    //         setScore(combinedMetrics.score);
-    //         setAccuracy(combinedMetrics.accuracy);
-    //         setTimeTaken(timeTaken);
-    //         setTestTime(currentSection?.testTime ?? 0);
-    //       } else {
-    //         const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
-    //         const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-    //         setAttemptedQuestions(metrics.attemptedQuestions);
-    //         setAnsweredCorrect(metrics.answeredCorrect);
-    //         setAnsweredIncorrect(metrics.answeredIncorrect);
-    //         setScore(metrics.score);
-    //         setAccuracy(metrics.accuracy);
-    //         setTimeTaken(timeTaken);
-    //         setTestTime(currentSection?.testTime ?? 0);
-    //       }
-
-    //       setIsSubmitButtonDisabled(true);
-
-    //       setTimeout(() => {
-    //         onCloseFirst();
-    //         onOpenSecond();
-    //       }, 1000);
-    //     } catch (error) {
-    //       console.error('Error in handleSubmit:', error);
-    //       toast.dismiss(loadingToastId);
-    //       toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
-    //         autoClose: 5000,
-    //         position: 'top-center'
-    //       });
-    //       setIsSubmitButtonDisabled(false);
-    //     }
-    //   };
-
-    const handleSubmit = async () => {
-        const loadingToastId = toast.loading('Submitting your test responses...');
-        setIsSubmitButtonDisabled(true);
-        updateCurrentQuestionTime();
-
-        if (!currentUserId) {
-            toast.dismiss(loadingToastId);
-            toast.error('User authentication required');
-            setIsSubmitButtonDisabled(false);
-            return;
-        }
-
-        // Helper function to filter questions and create states with proper type checking
-const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
-    return questions.reduce((acc: { questions: Question[]; states: QuestionState[] }, question, index) => {
-      // Only include non-bonus questions OR bonus questions if they're unlocked
-      if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
-        acc.questions.push(question);
-        // Ensure we have a valid state object
-        const state = states[index] || {
-          questionId: question.questionId,
-          status: 'not-visited' as const,
-          answered: false,
-          selectedOption: null,
-          answeredCorrect: null,
-          spentTime: 0,
-          allotedTime: calculateAllotedTime(question.difficulty),
-          remarks: '-',
-          question: question.question,
-          difficulty: question.difficulty,
-          isBonus: question.isBonus,
-          order: question.order,
-        };
-        acc.states.push(state);
-      }
-      return acc;
-    }, { questions: [], states: [] });
-  };
   
-
-
-       // Update getFinalQuestionData with null checks
-        const getFinalQuestionData = (states: QuestionState[]) =>
-            states.map((state) => ({
-            ...state,
-            allotedTime: state.allotedTime || calculateAllotedTime(state.difficulty),
-            spentTime: state.spentTime || 0,
-            remarks: determineRemarks(
-                state.allotedTime || calculateAllotedTime(state.difficulty),
-                state.spentTime || 0,
-                state.answeredCorrect || null,
-                state.answered || false
-            )
-            }));
-
-        // Update processQuestions function with proper type checking
-const processQuestions = () => {
-    if (currentSection?.isUmbrellaTest) {
-      return subSections.map((section) => {
-        if (!section.questions || !section.states) {
-          return {
-            ...section,
-            questions: [],
-            states: [],
-            hasBonusQuestions: false
-          };
-        }
-  
-        const filtered = filterQuestionsAndStates(
-          section.questions,
-          section.states
-        );
-  
-        return {
-          ...section,
-          questions: filtered.questions,
-          states: getFinalQuestionData(filtered.states),
-          hasBonusQuestions: showBonusQuestions && section.questions.some(q => q.isBonus)
-        };
-      });
-    } else {
-      // Ensure questions and questionStates are valid arrays
-      const validQuestions = questions || [];
-      const validStates = questionStates || [];
-      const filtered = filterQuestionsAndStates(validQuestions, validStates);
-  
-      return {
-        states: getFinalQuestionData(filtered.states),
-        hasBonusQuestions: showBonusQuestions && validQuestions.some(q => q.isBonus)
-      };
-    }
-  };
-
-
-        // Calculate metrics including only relevant questions
-        const calculateMetrics = (states: QuestionState[], questions: Question[], section?: Section) => {
-            const totalQuestions = states.length;
-            const attemptedQuestions = states.filter(q => q.answered).length;
-            const correctAnswers = states.filter(q => q.answeredCorrect).length;
-            const incorrectAnswers = attemptedQuestions - correctAnswers;
-
-            const marksPerCorrect = parseFloat(section?.marksPerQ || currentSection?.marksPerQ || "0");
-            const marksPerIncorrect = parseFloat(section?.nMarksPerQ || currentSection?.nMarksPerQ || "0");
-
-            const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
-            const maxPossibleScore = totalQuestions * marksPerCorrect;
-            const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
-
-            return {
-                attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
-                answeredCorrect: `${correctAnswers}/${totalQuestions}`,
-                answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
-                score: `${totalScore}/${maxPossibleScore}`,
-                accuracy: `${accuracy.toFixed(2)}%`
-            };
-        };
-
-        try {
-            let currentPath = `testseries/${tId}`;
-            for (const sectionId of sections) {
-                currentPath += `/sections/${sectionId}`;
-            }
-            currentPath += `/attempts`;
-
-            const batch = writeBatch(db);
-            const attemptsRef = collection(db, currentPath);
-            const userAttempts = await getDocs(
-                query(attemptsRef, where('userId', '==', currentUserId))
-            );
-            const attemptNumber = userAttempts.size + 1;
-            const processedQuestions = processQuestions();
-
-            if (currentSection?.isUmbrellaTest) {
-                const mainAttemptRef = doc(attemptsRef);
-                const combinedStates = (processedQuestions as SubSection[])
-                    .flatMap(section => section.states || []);
-                const combinedQuestions = (processedQuestions as SubSection[])
-                    .flatMap(section => section.questions || []);
-
-                const combinedMetrics = calculateMetrics(combinedStates, combinedQuestions);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                const mainAttemptData = {
-                    attemptDateAndTime: serverTimestamp(),
-                    isUmbrellaTest: true,
-                    testTime: currentSection.testTime,
-                    timeTaken,
-                    userId: currentUserId,
-                    attemptNumber,
-                    bonusQuestionsAttempted: showBonusQuestions,
-                    ...combinedMetrics,
-                    questions: combinedStates
-                };
-
-                batch.set(mainAttemptRef, mainAttemptData);
-
-                // Process sub-attempts
-                const subattemptsRef = collection(mainAttemptRef, 'subattempts');
-                (processedQuestions as SubSection[]).forEach((section) => {
-                    const sectionMetrics = calculateMetrics(
-                        section.states || [],
-                        section.questions || [],
-                        section
-                    );
-                    const subattemptRef = doc(subattemptsRef);
-                    batch.set(subattemptRef, {
-                        sectionId: section.id,
-                        sectionName: section.sectionName,
-                        timeTaken: getTotalTimeSpent(subsectionTimers[section.id] || { timeSpent: 0, lastStartTime: 0 }),
-                        bonusQuestionsAttempted: showBonusQuestions,
-                        ...sectionMetrics,
-                        questions: section.states
-                    });
-                });
-            } else {
-                // Regular test submission
-                const filtered = processedQuestions as { states: QuestionState[] };
-                const metrics = calculateMetrics(filtered.states, questions);
-                const attemptRef = doc(attemptsRef);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                batch.set(attemptRef, {
-                    attemptDateAndTime: serverTimestamp(),
-                    isUmbrellaTest: false,
-                    testTime: currentSection?.testTime,
-                    timeTaken,
-                    userId: currentUserId,
-                    attemptNumber,
-                    bonusQuestionsAttempted: showBonusQuestions,
-                    ...metrics,
-                    questions: filtered.states
-                });
-            }
-
-            await batch.commit();
-
-            // Success handling and UI updates
-            toast.dismiss(loadingToastId);
-            toast.success('Test submitted successfully! Redirecting to results...', {
-                autoClose: 3000,
-                position: 'top-center'
-            });
-            // Update UI state after submission
-            if (currentSection?.isUmbrellaTest) {
-                const processedQuestions = processQuestions() as SubSection[];
-                const combinedStates = processedQuestions.flatMap(section => section.states || []);
-                const combinedQuestions = processedQuestions.flatMap(section => section.questions || []);
-
-                // Calculate metrics only for questions that should be included
-                const combinedMetrics = calculateMetrics(combinedStates, combinedQuestions);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                // Update question states based on processed data
-                if (Array.isArray(combinedStates)) {
-                    if (!('states' in (combinedStates[0] || {}))) {
-                        setQuestionStates(combinedStates as QuestionState[]);
-                    } else {
-                        const flattenedStates = combinedStates.flatMap(section =>
-                            'states' in section ? section.states || [] : [section]
-                        );
-                        setQuestionStates(flattenedStates as QuestionState[]);
-                    }
-                }
-
-                // Update all other state values
-                setQuestions(combinedQuestions);
-                setAttemptedQuestions(combinedMetrics.attemptedQuestions);
-                setAnsweredCorrect(combinedMetrics.answeredCorrect);
-                setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
-                setScore(combinedMetrics.score);
-                setAccuracy(combinedMetrics.accuracy);
-                setTimeTaken(timeTaken);
-                setTestTime(currentSection?.testTime ?? 0);
-
-            } else {
-                // Handle regular test
-                const processed = processQuestions() as { states: QuestionState[] };
-                const relevantQuestions = questions.filter(q =>
-                    !q.isBonus || (q.isBonus && showBonusQuestions)
-                );
-
-                const metrics = calculateMetrics(processed.states, relevantQuestions);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                // Update states for regular test
-                setQuestionStates(processed.states);
-                setAttemptedQuestions(metrics.attemptedQuestions);
-                setAnsweredCorrect(metrics.answeredCorrect);
-                setAnsweredIncorrect(metrics.answeredIncorrect);
-                setScore(metrics.score);
-                setAccuracy(metrics.accuracy);
-                setTimeTaken(timeTaken);
-                setTestTime(currentSection?.testTime ?? 0);
-            }
-
-            // Disable submit button and handle modal transition
-            setIsSubmitButtonDisabled(true);
-            setTimeout(() => {
-                onCloseFirst();
-                onOpenSecond();
-            }, 1000);
-
-        } catch (error) {
-            console.error('Error in handleSubmit:', error);
-            toast.dismiss(loadingToastId);
-            toast.error('Failed to submit test. Please try again.', {
-                autoClose: 5000,
-                position: 'top-center'
-            });
-            setIsSubmitButtonDisabled(false);
-        }
-    };
 
 
     const handleClearResponse = () => {

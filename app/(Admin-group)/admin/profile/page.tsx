@@ -45,7 +45,7 @@ function Profile() {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [router]);
 
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;

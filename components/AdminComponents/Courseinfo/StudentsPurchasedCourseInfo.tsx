@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -148,7 +148,7 @@ function StudentsPurchasedCourseInfo({ courseId }: StudentsAttemptsProps) {
     });
 
 
-    const handleRemoveUser = async (userId: string) => {
+    const handleRemoveUser = useCallback(async (userId: string) => {
         try {
             const attemptRef = doc(db, 'course', courseId, 'StudentsPurchased', userId);
             const transactionRef = doc(db, 'users', userId, 'transactions', courseId);
@@ -163,7 +163,7 @@ function StudentsPurchasedCourseInfo({ courseId }: StudentsAttemptsProps) {
         } catch (error) {
             console.error('Error removing user attempt:', error);
         }
-    };
+    }, [courseId, closeRemove]);
 
     const handleAddUser = async (userId: string) => {
         try {
@@ -299,7 +299,7 @@ function StudentsPurchasedCourseInfo({ courseId }: StudentsAttemptsProps) {
         // Update state with filtered and sorted StudentsAttempts
         setData(filterStudentsAttempts);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, studentAttempts, selectedDate, sortConfig]);
+    }, [searchTerm, studentAttempts, selectedDate, sortConfig, enrollmentFilter]);
 
     // const handleSort = (key: string) => {
     //     if (key === 'progress') {  // Added 'timeTaken'

@@ -255,7 +255,7 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
     const router = useRouter();
     const [attemptPopover, setAttemptPopover] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
-    const sectionMap = {
+    const sectionMap = React.useMemo(() => ({
         'overview': '#overview',
         'graphical-view': '#Graphicalviewofoverview',
         'time-accuracy': '#TimeAccuracy',
@@ -264,7 +264,7 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
         'attempts-3-hours': '#Attemptsoverthe3hours',
         'complete-analysis': '#CompleteAnalysis',
         'summary': '#Summary'
-    } as const;
+    } as const), []); // Empty dependency array ensures it's created only once
 
     const handleTabChange = React.useCallback((key: Key) => {
         const sectionSelector = sectionMap[key as keyof typeof sectionMap];
@@ -334,7 +334,7 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
                 scrollContainer.removeEventListener("scroll", handleScroll);
             }
         };
-    }, [activeTab, sectionMap]);
+    }, [activeTab]); // Remove sectionMap from dependencies as it's memoized
 
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">

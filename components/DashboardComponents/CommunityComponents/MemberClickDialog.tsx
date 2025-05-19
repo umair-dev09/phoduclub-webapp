@@ -68,7 +68,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
 
     // Cleanup function to unsubscribe from the real-time listener
     return () => unsubscribe();
-  }, [id]); // Re-run this effect when id changes
+  }, [isAdmin, id]); // Re-run this effect when id changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
 
